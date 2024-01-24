@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 
+from libs.logs import CustomJsonFormatter, RequestResponseFormatter
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -121,8 +124,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [str(BASE_DIR / "static")]
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -136,4 +139,90 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ]
+}
+
+
+LOG_DIR = "/var/log"
+HOST_NAME = os.getenv("HOSTNAME")
+if not HOST_NAME:
+    HOST_NAME = "rentdoor"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": True,
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+    },
+    "formatters": {
+        "simple": {
+            "format": "%(levelname)s %(asctime)s %(message)s %(request_id)s",
+        },
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(message)s %(request_id)s",
+        },
+        "json": {"()": CustomJsonFormatter},
+        "req-resp-json": {"()": RequestResponseFormatter},
+    },
+    "handlers": {
+        "stdout": {
+            "class": "logging.StreamHandler",
+            "formatter": "json",  # Use the JSON formatter
+        },
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "json",
+        },
+        "django_file": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "formatter": "req-resp-json",
+            "filename": os.path.join(LOG_DIR, HOST_NAME + "_django.log"),
+        },
+        "exceptions_file": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "formatter": "json",
+            "filename": os.path.join(LOG_DIR, HOST_NAME + "_exceptions.log"),
+            "encoding": "utf8",
+        },
+        "primary_file": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "formatter": "json",
+            "filename": os.path.join(LOG_DIR, HOST_NAME + "_primary.log"),
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["stdout"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "django.template": {
+            "handlers": ["primary_file", "console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "reviews": {
+            "handlers": ["primary_file", "console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["django_file"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+    },
 }

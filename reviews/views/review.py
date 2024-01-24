@@ -1,19 +1,22 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import render
+from reviews.forms.review import CreateReviewForm
+import logging
+
+logger = logging.getLogger(__name__)
 
 
-class Reviews(APIView):
-    def get(self, request, *args, **kwargs):
-        response = {"data": [], "message": "Reviews fetched successfully"}
+class Reviews:
+    def home_view(request):
+        logger.info("Getting reviews list")
+        return render(request, "reviews/home.html", {"reviews": []})
 
-        return Response(response, status=status.HTTP_200_OK)
+    def create_review(request):
+        form = CreateReviewForm()
 
-    def post(self, request, *args, **kwargs):
-        response = {"data": [], "message": "Review added successfully"}
-
-        return Response(response, status=status.HTTP_200_OK)
+        return render(request, "reviews/create_review.html", {"form": form})
 
 
 class ReviewById(APIView):
