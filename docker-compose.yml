@@ -4,12 +4,22 @@ services:
   web:
     image: rentdoor
     container_name: rentdoor_webserver
-    command: ["gunicorn", "--bind", "0.0.0.0:8000", "rentdoor.wsgi"]
+      # command: ["gunicorn", "--bind", "0.0.0.0:8000", "rentdoor.wsgi"]
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
     expose:
       - 8000
     environment:
       - APP_PORT=1234
       - DJANGO_SETTINGS_MODULE=settings.local
+      - MYSQL_DATABASE=rentdoor
+      - MYSQL_USERNAME=admin
+      - MYSQL_PASSWORD=admin123
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/reviews
     links:
       - mysql
   mysql:
@@ -21,7 +31,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
     volumes:
-      - ./setup/scripts:/docker-entrypoint-initdb.d
+      - ./setup/mysql:/docker-entrypoint-initdb.d
       - ./mysql_data_container:/var/lib/mysql:rw
     user: mysql
   phpmyadmin:

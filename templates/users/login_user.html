@@ -8,8 +8,9 @@
     <form method='POST'>
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="mt-1">Signup</button>
+        <button type="submit" class="mt-1">Login</button>
         <a class="button secondaryAction ml-1" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
+        <a class="underline ml-1" href="/user/signup">Sign Up</a>
     </form>
 </div>
 

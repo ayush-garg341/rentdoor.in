@@ -88,3 +88,9 @@ env/
 
 # VS Code
 .vscode/
+
+# remove sqlite
+db.sqlite3
+
+# remove mysql data container
+mysql_data_container/

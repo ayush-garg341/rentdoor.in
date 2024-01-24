@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from reviews.forms.review import CreateReviewForm
 import logging
 
@@ -15,8 +15,9 @@ class Reviews:
 
     def create_review(request):
         form = CreateReviewForm()
-
-        return render(request, "reviews/create_review.html", {"form": form})
+        if request.user and request.user.is_authenticated:
+            return render(request, "reviews/create_review.html", {"form": form})
+        return redirect("users:login_user")
 
 
 class ReviewById(APIView):
