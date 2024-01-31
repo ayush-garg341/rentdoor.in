@@ -2,6 +2,9 @@ from django.urls import path
 from reviews.views.review import Reviews
 from reviews.views.healthcheck import HealthCheck
 
+app_name = "reviews"
+
+
 urlpatterns = [
     path("ping", HealthCheck.as_view(), name="healthcheck"),
     path("", Reviews.home_view, name="get_all_reviews"),

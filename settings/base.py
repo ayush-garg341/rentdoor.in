@@ -147,6 +147,8 @@ REST_FRAMEWORK = {
     ]
 }
 
+SESSION_COOKIE_SECURE = False
+
 
 LOG_DIR = "/var/log"
 HOST_NAME = os.getenv("HOSTNAME")

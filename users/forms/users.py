@@ -6,15 +6,19 @@ from django.contrib.auth.models import User
 class LoginUserForm(ModelForm):
     class Meta:
         model = User
-        fields = ["email", "password"]
-        labels = {"email": "Email", "password": "Password"}
+        fields = ["username", "password"]
+        help_texts = {
+            "username": None,
+        }
+
+        labels = {"username": "Username", "password": "Password"}
         widgets = {
-            "email": forms.TextInput(
+            "username": forms.TextInput(
                 attrs={
                     "placeholder": "Email or username...",
                 }
             ),
-            "password": forms.TextInput(attrs={"placeholder": ""}),
+            "password": forms.PasswordInput(attrs={"placeholder": ""}),
         }
 
 
@@ -50,5 +54,5 @@ class CreateUserForm(ModelForm):
                     "placeholder": "Email...",
                 }
             ),
-            "password": forms.TextInput(attrs={"placeholder": ""}),
+            "password": forms.PasswordInput(attrs={"placeholder": ""}),
         }
