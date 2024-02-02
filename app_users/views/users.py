@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
+from django.db import transaction
 
 from django.contrib.auth.models import User as user_model
-from users.forms.users import LoginUserForm, CreateUserForm
+from app_users.forms.users import LoginUserForm, CreateUserForm, CreateProfileForm
 import logging
 
 logger = logging.getLogger(__name__)
@@ -13,10 +14,13 @@ logger = logging.getLogger(__name__)
 class User:
     def login_user(request):
         form = LoginUserForm()
-        logger.info("login user")
         if request.method == "POST":
             uname = request.POST.get("username")
-            _ = get_object_or_404(user_model, username=uname)
+            try:
+                _ = get_object_or_404(user_model, username=uname)
+            except Exception as e:
+                logger.exception("Exception occurred", str(e))
+                return redirect("app_users:create_user")
             pwd = request.POST.get("password")
             auth_user = authenticate(request, username=uname, password=pwd)
             login(request, auth_user)
@@ -36,7 +40,7 @@ class User:
 
     def create_user(request):
         form = CreateUserForm()
-        logger.info("Creating user")
+        profile_form = CreateProfileForm()
         if request.method == "POST":
             first_name = request.POST.get("first_name")
             last_name = request.POST.get("last_name")
@@ -47,14 +51,23 @@ class User:
                 # pass error to the form object if already exists
                 return HttpResponse("Username already exists.")
             else:
-                user = user_model(
-                    first_name=first_name,
-                    last_name=last_name,
-                    username=username,
-                    email=email,
-                    password=pwd,
-                )
-                user.save()
-                # add message at top showing success
-                return redirect("users:login_user")
-        return render(request, "users/create_user.html", {"form": form})
+                with transaction.atomic():
+                    user = user_model(
+                        first_name=first_name,
+                        last_name=last_name,
+                        username=username,
+                        email=email,
+                        password=pwd,
+                    )
+                    user.save()
+                    user.profile.job_title = request.POST.get("job_title")
+                    user.profile.profile_pic = (
+                        request.FILES.get("profile_pic").read()
+                        if request.FILES.get("profile_pic")
+                        else ""
+                    )
+                    user.save()
+                    return redirect("app_users:login_user")
+        return render(
+            request, "users/create_user.html", {"form": form, "profile": profile_form}
+        )

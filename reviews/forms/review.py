@@ -13,7 +13,8 @@ class CreateReviewForm(ModelForm):
                 attrs={
                     "rows": 3,
                     "placeholder": "Add a description...",
+                    "required": "required",
                 }
             ),
-            "title": forms.TextInput(attrs={"placeholder": ""}),
+            "title": forms.TextInput(attrs={"placeholder": "", "required": "required"}),
         }

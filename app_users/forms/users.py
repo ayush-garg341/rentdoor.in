@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from django import forms
 from django.contrib.auth.models import User
+from app_users.models.profile import Profile
 
 
 class LoginUserForm(ModelForm):
@@ -35,9 +36,7 @@ class CreateUserForm(ModelForm):
         }
         widgets = {
             "first_name": forms.TextInput(
-                attrs={
-                    "placeholder": "",
-                }
+                attrs={"placeholder": "", "required": "required"}
             ),
             "last_name": forms.TextInput(
                 attrs={
@@ -45,14 +44,24 @@ class CreateUserForm(ModelForm):
                 }
             ),
             "username": forms.TextInput(
-                attrs={
-                    "placeholder": "",
-                }
+                attrs={"placeholder": "", "required": "required"}
             ),
             "email": forms.TextInput(
-                attrs={
-                    "placeholder": "Email...",
-                }
+                attrs={"placeholder": "Email...", "required": "required"}
             ),
-            "password": forms.PasswordInput(attrs={"placeholder": ""}),
+            "password": forms.PasswordInput(
+                attrs={"placeholder": "", "required": "required"}
+            ),
+        }
+
+
+class CreateProfileForm(ModelForm):
+    class Meta:
+        model = Profile
+        fields = ["job_title"]
+        labels = {"job_title": "Job Title"}
+        widgets = {
+            "job_title": forms.TextInput(
+                attrs={"placeholder": "", "required": "required"}
+            ),
         }

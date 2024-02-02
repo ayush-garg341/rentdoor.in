@@ -1,9 +1,11 @@
+from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from django.shortcuts import render, redirect
 from reviews.forms.review import CreateReviewForm
+from django.contrib.auth.models import User as user_model
 import logging
+import base64
 
 logger = logging.getLogger(__name__)
 
@@ -16,8 +18,14 @@ class Reviews:
     def create_review(request):
         form = CreateReviewForm()
         if request.user and request.user.is_authenticated:
-            return render(request, "reviews/create_review.html", {"form": form})
-        return redirect("users:login_user")
+            user = get_object_or_404(user_model, username=request.user)
+            encoded_data = base64.b64encode(bytes(user.profile.profile_pic, "utf-8"))
+            return render(
+                request,
+                "reviews/create_review.html",
+                {"form": form, "user_profile_link": encoded_data},
+            )
+        return redirect("app_users:login_user")
 
 
 class ReviewById(APIView):
