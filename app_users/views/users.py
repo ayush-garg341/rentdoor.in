@@ -6,6 +6,7 @@ from django.db import transaction
 
 from django.contrib.auth.models import User as user_model
 from app_users.forms.users import LoginUserForm, CreateUserForm, CreateProfileForm
+import base64
 import logging
 
 logger = logging.getLogger(__name__)
@@ -62,7 +63,7 @@ class User:
                     user.save()
                     user.profile.job_title = request.POST.get("job_title")
                     user.profile.profile_pic = (
-                        request.FILES.get("profile_pic").read()
+                        base64.b64encode(request.FILES.get("profile_pic").read())
                         if request.FILES.get("profile_pic")
                         else ""
                     )

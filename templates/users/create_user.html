@@ -9,7 +9,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         {{ profile.as_p }}
-        <p><label for="id_profile_pic">Upload Photo:</label> <input type="file" name="profile_pic" placeholder="" required=true maxlength="500" id="id_profile_pic"></p>
+        <p><label for="id_profile_pic">Upload Photo:</label> <input type="file" name="profile_pic" accept="image/*" id="id_profile_pic"></p>
         <button type="submit" class="mt-1">Signup</button>
         <a class="button secondaryAction ml-1" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
     </form>

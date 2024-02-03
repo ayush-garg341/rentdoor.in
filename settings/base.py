@@ -147,6 +147,7 @@ REST_FRAMEWORK = {
     ]
 }
 
+LOGIN_URL = "/user/login"
 SESSION_COOKIE_SECURE = False
 
 

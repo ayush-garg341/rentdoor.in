@@ -1,13 +1,23 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
-class Review(models.Model):
+class Reviews(models.Model):
+    user_id = models.ForeignKey(User, db_column="user_id", on_delete=models.CASCADE)
+    rating = models.IntegerField(blank=True, null=True, default=0)
     title = models.CharField(max_length=500)
     description = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
+    house_num = models.CharField(max_length=20, blank=True, null=True)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    pin_code = models.CharField(max_length=20)
+    country = models.CharField(max_length=50)
+    address_line_1 = models.CharField(max_length=255)
+    address_line_2 = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = "reviews"
 
     def __str__(self):
         return str(self.title)
-
-    class Meta:
-        ordering = ["-created"]

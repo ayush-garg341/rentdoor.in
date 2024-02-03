@@ -6,3 +6,6 @@
 
 - To generate the corresponding SQL from migrations, we can run the below command
     - python manage.py sqlmigrate app_name <migration_file_name_without_py>
+
+- To get django models out of SQL tables
+    - python manage.py inspectdb
