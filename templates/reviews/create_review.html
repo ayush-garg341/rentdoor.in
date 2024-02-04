@@ -5,9 +5,10 @@
 <h1>Create Post</h1>
 <div class="card !p-8">
 
-    <form method='POST'>
+    <form method='POST' enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
+        <p><label for="id_supporting_docs">Supporting Docs (Rent agreement, house img):</label> <input type="file" name="supporting_docs" accept=".pdf,.doc,.docx,.xml,application/msword, image/*" id="id_supporting_docs" multiple></p>
         <button type="submit" class="mt-1">Submit Review</button>
         <a class="button secondaryAction ml-1" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
     </form>

@@ -1,21 +1,53 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-from reviews.forms.review import CreateReviewForm
+from django.db import transaction
+from django.db.models import F
 from django.contrib.auth.models import User as user_model
-
-# from reviews.models.review import Reviews as ReviewModel
+from reviews.forms.review import CreateReviewForm
+from reviews.models.review import Reviews as ReviewModel
+from reviews.models.supporting_docs import SupportingDocs
 import logging
+import base64
 
 logger = logging.getLogger(__name__)
 
 
 class Reviews:
     def home_view(request):
-        logger.info("Getting reviews list")
-        return render(request, "reviews/home.html", {"reviews": []})
+        encoded_data = ""
+        if request.user.is_authenticated:
+            user = get_object_or_404(user_model, username=request.user)
+            if user.profile.profile_pic:
+                encoded_data = user.profile.profile_pic
+                encoded_data = encoded_data[2 : len(encoded_data) - 1]
+
+        reviews = (
+            ReviewModel.objects.filter(is_active=True)
+            .select_related("user_id")
+            .values(
+                "id",
+                "title",
+                "description",
+                "address_line_1",
+                "address_line_2",
+                "created_at",
+                "user_id__first_name",
+            )
+            .annotate(first_name=F("user_id__first_name"))
+            .order_by("-created_at")
+        )
+
+        reviews_objs = []
+        for review in reviews:
+            docs = SupportingDocs.objects.filter(review=review["id"])
+            review["docs"] = docs
+            reviews_objs.append(review)
+
+        return render(
+            request,
+            "reviews/home.html",
+            {"reviews": reviews, "user_profile_link": encoded_data},
+        )
 
     @login_required
     def create_review(request):
@@ -24,9 +56,19 @@ class Reviews:
         if request.method == "POST":
             review_form = CreateReviewForm(request.POST)
             if review_form.is_valid():
-                review = review_form.save(commit=False)
-                review.user_id = user
-                review.save()
+                with transaction.atomic():
+                    review = review_form.save(commit=False)
+                    review.user_id = user
+                    review.save()
+                    print(request.FILES)
+                    if request.FILES:
+                        files = request.FILES.getlist("supporting_docs")
+                        for file in files:
+                            doc = SupportingDocs()
+                            doc.review = review
+                            doc.name = file.name
+                            doc.doc_data = base64.b64decode(file.read())
+                            doc.save()
             else:
                 logger.error(review_form.errors())
             return redirect("reviews:create_review")
@@ -40,22 +82,3 @@ class Reviews:
                 "reviews/create_review.html",
                 {"form": form, "user_profile_link": encoded_data},
             )
-
-
-class ReviewById(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        response = {"data": [], "message": "Review fetched successfully"}
-
-        return response(response, status=status.http_200_ok)
-
-    def put(self, request, *args, **kawrgs):
-        response = {"data": [], "message": "review updated successfully"}
-
-        return response(response, status=status.http_200_ok)
-
-    def delete(self, request, *args, **kwargs):
-        response = {"data": [], "message": "review deleted successfully"}
-
-        return response(response, status=status.http_200_ok)

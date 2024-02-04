@@ -24,12 +24,12 @@ class User:
                 return redirect("app_users:create_user")
             pwd = request.POST.get("password")
             auth_user = authenticate(request, username=uname, password=pwd)
-            login(request, auth_user)
             if auth_user:
+                login(request, auth_user)
                 request.session["user"] = uname
                 return redirect("reviews:create_review")
             else:
-                return HttpResponse("Please enter valid Username or Password.")
+                return render(request, "users/login_user.html", {"form": form})
 
         return render(request, "users/login_user.html", {"form": form})
 

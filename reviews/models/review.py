@@ -14,6 +14,10 @@ class Reviews(models.Model):
     country = models.CharField(max_length=50)
     address_line_1 = models.CharField(max_length=255)
     address_line_2 = models.CharField(max_length=255)
+    is_active = models.SmallIntegerField(null=True, default=1)
+    is_deleted = models.SmallIntegerField(null=True, default=0)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         managed = False
