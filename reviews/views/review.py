@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import F
 from django.contrib.auth.models import User as user_model
@@ -15,6 +16,7 @@ logger = logging.getLogger(__name__)
 class Reviews:
     def home_view(request):
         encoded_data = ""
+        page_number = request.GET.get("page")
         if request.user.is_authenticated:
             user = get_object_or_404(user_model, username=request.user)
             if user.profile.profile_pic:
@@ -36,12 +38,12 @@ class Reviews:
             .annotate(first_name=F("user_id__first_name"))
             .order_by("-created_at")
         )
+        paginator = Paginator(reviews, 10)
+        reviews = paginator.get_page(page_number)
 
-        reviews_objs = []
         for review in reviews:
             docs = SupportingDocs.objects.filter(review=review["id"])
             review["docs"] = docs
-            reviews_objs.append(review)
 
         return render(
             request,

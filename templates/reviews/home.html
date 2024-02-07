@@ -6,5 +6,50 @@
 {% include 'reviews/review.html' %}
 {% endfor %}
 
+{% if reviews.has_other_pages %}
+  {% comment %}<ul class="flex items-center -space-x-px h-8 text-sm">{% endcomment %}
+    {% comment %}{% if reviews.has_previous %}{% endcomment %}
+      {% comment %}<li><a href="?page={{ reviews.previous_page_number }}" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">&laquo;</a></li>{% endcomment %}
+    {% comment %}{% else %}{% endcomment %}
+      {% comment %}<li class="disabled"><span>&laquo;</span></li>{% endcomment %}
+    {% comment %}{% endif %}{% endcomment %}
+    {% comment %}{% for i in reviews.paginator.page_range %}{% endcomment %}
+      {% comment %}{% if reviews.number == i %}{% endcomment %}
+        {% comment %}<li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>{% endcomment %}
+      {% comment %}{% else %}{% endcomment %}
+        {% comment %}<li><a href="?page={{ i }}">{{ i }}</a></li>{% endcomment %}
+      {% comment %}{% endif %}{% endcomment %}
+    {% comment %}{% endfor %}{% endcomment %}
+    {% comment %}{% if reviews.has_next %}{% endcomment %}
+      {% comment %}<li><a href="?page={{ reviews.next_page_number }}">&raquo;</a></li>{% endcomment %}
+    {% comment %}{% else %}{% endcomment %}
+      {% comment %}<li class="disabled"><span>&raquo;</span></li>{% endcomment %}
+    {% comment %}{% endif %}{% endcomment %}
+  {% comment %}</ul>{% endcomment %}
+<ul class="inline-flex -space-x-px text-sm">
+    <li>
+      <a href="#" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+    </li>
+    <li>
+      <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
+    </li>
+    <li>
+      <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
+    </li>
+    <li>
+      <a href="#" aria-current="page" class="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
+    </li>
+    <li>
+      <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">4</a>
+    </li>
+    <li>
+      <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
+    </li>
+    <li>
+      <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
+    </li>
+</ul>
+{% endif %}
+
 
 {% endblock %}
