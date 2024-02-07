@@ -26,24 +26,12 @@ class Reviews:
         reviews = (
             ReviewModel.objects.filter(is_active=True)
             .select_related("user_id")
-            .values(
-                "id",
-                "title",
-                "description",
-                "address_line_1",
-                "address_line_2",
-                "created_at",
-                "user_id__first_name",
-            )
+            .prefetch_related("supporting_docs")
             .annotate(first_name=F("user_id__first_name"))
             .order_by("-created_at")
         )
-        paginator = Paginator(reviews, 10)
+        paginator = Paginator(reviews, 5)
         reviews = paginator.get_page(page_number)
-
-        for review in reviews:
-            docs = SupportingDocs.objects.filter(review=review["id"])
-            review["docs"] = docs
 
         return render(
             request,

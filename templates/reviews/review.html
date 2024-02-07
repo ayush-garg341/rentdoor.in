@@ -17,7 +17,7 @@
         <div class="flex items-center gap-1 mb-4">
 
             <span class="text-gray-500">Supporting Docs:-
-                {% for doc in review.docs %}
+                {% for doc in review.supporting_docs.all %}
                 <a download={{ doc.name }} href="data:image/*;base64,{{ doc.doc_data | safe}}"><span class="text-gray-500 underline cursor">{{ doc.name }}</span></a>
                 {% endfor %}
             </span>
