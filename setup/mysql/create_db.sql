@@ -22,6 +22,10 @@ CREATE TABLE reviews (
     updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 );
 ALTER TABLE `reviews` ADD CONSTRAINT `review_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
+ALTER table reviews add COLUMN locality text not null;
+CREATE INDEX pincode_idx
+ON reviews (pin_code);
+CREATE FULLTEXT INDEX locality_idx ON reviews(locality);
 
 
 CREATE TABLE supporting_docs (

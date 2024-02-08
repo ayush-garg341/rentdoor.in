@@ -33,3 +33,8 @@ class CreateReviewForm(ModelForm):
                 }
             ),
         }
+
+
+class SearchReviewForm(forms.Form):
+    pin_code = forms.CharField(max_length=100, required=False, label="Pincode")
+    locality = forms.CharField(max_length=100, required=False, label="Locality")

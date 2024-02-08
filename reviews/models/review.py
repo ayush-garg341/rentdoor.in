@@ -7,6 +7,7 @@ class Reviews(models.Model):
     rating = models.IntegerField(blank=True, null=True, default=0)
     title = models.CharField(max_length=500)
     description = models.TextField()
+    locality = models.TextField()
     house_num = models.CharField(max_length=20, blank=True, null=True)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)

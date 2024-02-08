@@ -9,4 +9,5 @@ urlpatterns = [
     path("ping", HealthCheck.as_view(), name="healthcheck"),
     path("", Reviews.home_view, name="get_all_reviews"),
     path("create-review", Reviews.create_review, name="create_review"),
+    path("search-review", Reviews.search_review, name="search_review"),
 ]
