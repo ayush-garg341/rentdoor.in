@@ -3,6 +3,7 @@ Django
 djangorestframework==3.14.0
 gunicorn==21.2.0
 JSON-log-formatter==0.5.1
+mysqlclient
 packaging==23.2
 python-dotenv
 pytz==2023.3.post1

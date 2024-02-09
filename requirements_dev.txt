@@ -3,5 +3,6 @@ black
 flake8
 mypy
 pydocstyle
+isort
 pylint
 vulture

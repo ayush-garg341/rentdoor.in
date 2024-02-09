@@ -9,3 +9,5 @@
 
 - To get django models out of SQL tables
     - python manage.py inspectdb
+
+- If there is an issue related to mysqlclient while installing and running django app, try to change the python version to >= 3.10

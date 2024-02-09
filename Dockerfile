@@ -1,14 +1,14 @@
-FROM python:3.7 AS python-build
+FROM python:3.10 AS python-build
 
 RUN pip install --no-cache-dir mysqlclient
 
-FROM python:3.7-slim
+FROM python:3.10-slim
 
 # Add maintainer info
 LABEL maintainer="Ayush Garg <gargayush341@gmail.com>"
 
 # Copy site packages from above python-build
-COPY --from=python-build /usr/local/lib/python3.7/site-packages /usr/local/lib/python3.7/site-packages
+COPY --from=python-build /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 
 RUN mkdir reviews
 WORKDIR /reviews

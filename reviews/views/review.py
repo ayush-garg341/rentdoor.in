@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import F, Q
@@ -35,6 +36,7 @@ class Reviews:
         paginator = Paginator(reviews, 5)
         reviews = paginator.get_page(page_number)
 
+        messages.success(request, "This is success")
         return render(
             request,
             "reviews/home.html",
@@ -61,14 +63,13 @@ class Reviews:
                             doc.name = file.name
                             doc.doc_data = base64.b64decode(file.read())
                             doc.save()
-            else:
-                logger.error(review_form.errors())
             return redirect("reviews:create_review")
         else:
             encoded_data = ""
             if user.profile.profile_pic:
                 encoded_data = user.profile.profile_pic
                 encoded_data = encoded_data[2 : len(encoded_data) - 1]
+            messages.success(request, "Creating review")
             return render(
                 request,
                 "reviews/create_review.html",
