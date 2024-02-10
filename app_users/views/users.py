@@ -63,7 +63,9 @@ class User:
                     user.save()
                     user.profile.job_title = request.POST.get("job_title")
                     user.profile.profile_pic = (
-                        base64.b64encode(request.FILES.get("profile_pic").read())
+                        base64.b64encode(
+                            request.FILES.get("profile_pic").read()
+                        ).decode("utf-8")
                         if request.FILES.get("profile_pic")
                         else ""
                     )

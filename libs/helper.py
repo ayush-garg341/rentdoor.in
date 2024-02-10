@@ -1,4 +1,4 @@
-def create_locality(request):
+def create_locality(request: dict) -> str:
     locality = "%s %s %s %s %s" % (
         request.get("address_line_1"),
         request.get("address_line_2"),

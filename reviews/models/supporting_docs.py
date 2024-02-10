@@ -5,6 +5,7 @@ from reviews.models.review import Reviews
 class SupportingDocs(models.Model):
     review = models.ForeignKey(Reviews, models.CASCADE, related_name="supporting_docs")
     name = models.CharField(max_length=100, blank=True, null=True)
+    doc_type = models.CharField(max_length=15, db_column="type", blank=True, null=True)
     doc_data = models.TextField()
     doc_link = models.CharField(max_length=500, blank=True, null=True)
 

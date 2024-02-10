@@ -18,7 +18,11 @@
 
             <span class="text-gray-500">Supporting Docs:-
                 {% for doc in review.supporting_docs.all %}
+                {% if doc.doc_type == 'image' %}
                 <a download={{ doc.name }} href="data:image/*;base64,{{ doc.doc_data | safe}}"><span class="text-gray-500 underline cursor">{{ doc.name }}</span></a>
+                {% else %}
+                <a download={{ doc.name }} href="data:application/pdf;base64,{{ doc.doc_data | safe}}"><span class="text-gray-500 underline cursor">{{ doc.name }}</span></a>
+                {% endif %}
                 {% endfor %}
             </span>
         </div>

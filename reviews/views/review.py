@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import F, Q
@@ -24,7 +23,6 @@ class Reviews:
             user = get_object_or_404(user_model, username=request.user)
             if user.profile.profile_pic:
                 encoded_data = user.profile.profile_pic
-                encoded_data = encoded_data[2 : len(encoded_data) - 1]
 
         reviews = (
             ReviewModel.objects.filter(is_active=True)
@@ -36,7 +34,6 @@ class Reviews:
         paginator = Paginator(reviews, 5)
         reviews = paginator.get_page(page_number)
 
-        messages.success(request, "This is success")
         return render(
             request,
             "reviews/home.html",
@@ -60,16 +57,19 @@ class Reviews:
                         for file in files:
                             doc = SupportingDocs()
                             doc.review = review
-                            doc.name = file.name
-                            doc.doc_data = base64.b64decode(file.read())
+                            filename = file.name
+                            if filename[-4:] == ".pdf":
+                                doc.doc_type = "pdf"
+                            else:
+                                doc.doc_type = "image"
+                            doc.name = filename
+                            doc.doc_data = base64.b64encode(file.read()).decode("utf-8")
                             doc.save()
             return redirect("reviews:create_review")
         else:
             encoded_data = ""
             if user.profile.profile_pic:
                 encoded_data = user.profile.profile_pic
-                encoded_data = encoded_data[2 : len(encoded_data) - 1]
-            messages.success(request, "Creating review")
             return render(
                 request,
                 "reviews/create_review.html",
@@ -83,7 +83,6 @@ class Reviews:
             encoded_data = ""
             if user.profile.profile_pic:
                 encoded_data = user.profile.profile_pic
-                encoded_data = encoded_data[2 : len(encoded_data) - 1]
         if request.method == "POST":
             page_number = request.GET.get("page")
             pincode = request.POST.get("pin_code")

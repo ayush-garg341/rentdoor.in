@@ -13,7 +13,7 @@ CREATE TABLE reviews (
     city varchar(100) not null,
     state varchar(100) not null,
     pin_code varchar(20) not null,
-    country varchar(50) not null,
+    country varchar(50) not null default "India",
     address_line_1 varchar(255) not null,
     address_line_2 varchar(255) not null,
     is_active tinyint(1) NOT NULL DEFAULT '1',
@@ -23,6 +23,7 @@ CREATE TABLE reviews (
 );
 ALTER TABLE `reviews` ADD CONSTRAINT `review_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
 ALTER table reviews add COLUMN locality text not null;
+ALTER table reviews drop COLUMN house_num;
 CREATE INDEX pincode_idx
 ON reviews (pin_code);
 CREATE FULLTEXT INDEX locality_idx ON reviews(locality);
@@ -36,3 +37,4 @@ CREATE TABLE supporting_docs (
     doc_link varchar(500)
 );
 ALTER TABLE `supporting_docs` ADD CONSTRAINT `doc_review_id` FOREIGN KEY (`review_id`) REFERENCES `reviews` (`id`);
+ALTER TABLE `supporting_docs` ADD COLUMN `type` varchar(15);

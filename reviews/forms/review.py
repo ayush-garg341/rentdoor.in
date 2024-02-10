@@ -9,7 +9,6 @@ class CreateReviewForm(ModelForm):
         fields = [
             "title",
             "description",
-            "house_num",
             "city",
             "state",
             "pin_code",
@@ -22,7 +21,6 @@ class CreateReviewForm(ModelForm):
             "title": "Title",
             "address_line_1": "Address Line One",
             "address_line_2": "Address Line Two",
-            "house_num": "House No",
         }
         widgets = {
             "description": forms.Textarea(
