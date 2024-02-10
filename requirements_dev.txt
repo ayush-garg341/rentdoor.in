@@ -1,3 +1,4 @@
+pre-commit
 bandit
 black
 flake8
