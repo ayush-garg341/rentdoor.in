@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
+from django.contrib import messages
 
 from django.contrib.auth.models import User as user_model
 from app_users.forms.users import LoginUserForm, CreateUserForm, CreateProfileForm
@@ -48,29 +49,26 @@ class User:
             username = request.POST.get("username")
             email = request.POST.get("email")
             pwd = make_password(request.POST.get("password"))
-            if user_model.objects.filter(username=username).count() > 0:
-                # pass error to the form object if already exists
-                return HttpResponse("Username already exists.")
-            else:
-                with transaction.atomic():
-                    user = user_model(
-                        first_name=first_name,
-                        last_name=last_name,
-                        username=username,
-                        email=email,
-                        password=pwd,
+            with transaction.atomic():
+                user = user_model(
+                    first_name=first_name,
+                    last_name=last_name,
+                    username=username,
+                    email=email,
+                    password=pwd,
+                )
+                user.save()
+                user.profile.job_title = request.POST.get("job_title")
+                user.profile.profile_pic = (
+                    base64.b64encode(request.FILES.get("profile_pic").read()).decode(
+                        "utf-8"
                     )
-                    user.save()
-                    user.profile.job_title = request.POST.get("job_title")
-                    user.profile.profile_pic = (
-                        base64.b64encode(
-                            request.FILES.get("profile_pic").read()
-                        ).decode("utf-8")
-                        if request.FILES.get("profile_pic")
-                        else ""
-                    )
-                    user.save()
-                    return redirect("app_users:login_user")
+                    if request.FILES.get("profile_pic")
+                    else ""
+                )
+                user.save()
+                messages.info(request, "User created successfully")
+                return redirect("app_users:login_user")
         return render(
             request, "users/create_user.html", {"form": form, "profile": profile_form}
         )

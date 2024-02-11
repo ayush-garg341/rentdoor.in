@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
+from django.contrib import messages
 from django.db.models import F, Q
 from django.http import HttpResponse
 from django.contrib.auth.models import User as user_model
@@ -65,7 +66,8 @@ class Reviews:
                             doc.name = filename
                             doc.doc_data = base64.b64encode(file.read()).decode("utf-8")
                             doc.save()
-            return redirect("reviews:create_review")
+            messages.info(request, "Reviewed added successfully")
+            return redirect("reviews:get_all_reviews")
         else:
             encoded_data = ""
             if user.profile.profile_pic:
