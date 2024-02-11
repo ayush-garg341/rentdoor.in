@@ -89,9 +89,8 @@ class Reviews:
             locality = request.POST.get("locality")
             if not pincode and not locality:
                 return HttpResponse("Please enter one of the fields")
-            if pincode and locality:
-                # Search on both
-                pass
+            if locality:
+                reviews = ReviewModel.objects.locality_search(locality, pincode)
             elif pincode:
                 reviews = (
                     ReviewModel.objects.filter(Q(pin_code=pincode))

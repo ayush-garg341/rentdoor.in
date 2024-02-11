@@ -6,4 +6,4 @@ def create_locality(request: dict) -> str:
         request.get("city"),
         request.get("house_num"),
     )
-    return " ".join(sorted(set(locality), key=locality.index))
+    return locality.replace(",", " ")
