@@ -27,11 +27,24 @@ class CreateUserForm(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        pwd = cleaned_data.get("password")
+        confirm_pwd = cleaned_data.get("confirm_password")
+        if pwd != confirm_pwd:
+            raise ValidationError("password and confirm password does not match")
+
         return cleaned_data
+
+    confirm_password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "username", "email", "password"]
+        fields = [
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "password",
+        ]
         labels = {
             "first_name": "First Name",
             "last_name": "Last Name",
