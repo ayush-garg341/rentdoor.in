@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
@@ -44,31 +43,40 @@ class User:
         form = CreateUserForm()
         profile_form = CreateProfileForm()
         if request.method == "POST":
-            first_name = request.POST.get("first_name")
-            last_name = request.POST.get("last_name")
-            username = request.POST.get("username")
-            email = request.POST.get("email")
-            pwd = make_password(request.POST.get("password"))
-            with transaction.atomic():
-                user = user_model(
-                    first_name=first_name,
-                    last_name=last_name,
-                    username=username,
-                    email=email,
-                    password=pwd,
-                )
-                user.save()
-                user.profile.job_title = request.POST.get("job_title")
-                user.profile.profile_pic = (
-                    base64.b64encode(request.FILES.get("profile_pic").read()).decode(
-                        "utf-8"
+            user_form = CreateUserForm(request.POST)
+            profile_form = CreateProfileForm(request.POST)
+            if user_form.is_valid() and profile_form.is_valid():
+                first_name = request.POST.get("first_name")
+                last_name = request.POST.get("last_name")
+                username = request.POST.get("username")
+                email = request.POST.get("email")
+                pwd = make_password(request.POST.get("password"))
+                with transaction.atomic():
+                    user = user_model(
+                        first_name=first_name,
+                        last_name=last_name,
+                        username=username,
+                        email=email,
+                        password=pwd,
                     )
-                    if request.FILES.get("profile_pic")
-                    else ""
+                    user.save()
+                    user.profile.job_title = request.POST.get("job_title")
+                    user.profile.profile_pic = (
+                        base64.b64encode(
+                            request.FILES.get("profile_pic").read()
+                        ).decode("utf-8")
+                        if request.FILES.get("profile_pic")
+                        else ""
+                    )
+                    user.save()
+                    messages.info(request, "User created successfully")
+                    return redirect("app_users:login_user")
+            else:
+                return render(
+                    request,
+                    "users/create_user.html",
+                    {"form": user_form, "profile": profile_form},
                 )
-                user.save()
-                messages.info(request, "User created successfully")
-                return redirect("app_users:login_user")
         return render(
             request, "users/create_user.html", {"form": form, "profile": profile_form}
         )

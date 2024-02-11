@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, ValidationError
 from django import forms
 from django.contrib.auth.models import User
 from app_users.models.profile import Profile
@@ -24,6 +24,11 @@ class LoginUserForm(ModelForm):
 
 
 class CreateUserForm(ModelForm):
+
+    def clean(self):
+        cleaned_data = super().clean()
+        return cleaned_data
+
     class Meta:
         model = User
         fields = ["first_name", "last_name", "username", "email", "password"]
@@ -46,7 +51,7 @@ class CreateUserForm(ModelForm):
             "username": forms.TextInput(
                 attrs={"placeholder": "", "required": "required"}
             ),
-            "email": forms.TextInput(
+            "email": forms.EmailInput(
                 attrs={"placeholder": "Email...", "required": "required"}
             ),
             "password": forms.PasswordInput(

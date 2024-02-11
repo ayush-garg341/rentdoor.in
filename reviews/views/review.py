@@ -45,6 +45,9 @@ class Reviews:
     def create_review(request):
         form = CreateReviewForm()
         user = get_object_or_404(user_model, username=request.user)
+        encoded_data = ""
+        if user.profile.profile_pic:
+            encoded_data = user.profile.profile_pic
         if request.method == "POST":
             review_form = CreateReviewForm(request.POST)
             if review_form.is_valid():
@@ -66,12 +69,15 @@ class Reviews:
                             doc.name = filename
                             doc.doc_data = base64.b64encode(file.read()).decode("utf-8")
                             doc.save()
-            messages.info(request, "Reviewed added successfully")
-            return redirect("reviews:get_all_reviews")
+                messages.info(request, "Reviewed added successfully")
+                return redirect("reviews:get_all_reviews")
+            else:
+                return render(
+                    request,
+                    "reviews/create_review.html",
+                    {"form": review_form, "user_profile_link": encoded_data},
+                )
         else:
-            encoded_data = ""
-            if user.profile.profile_pic:
-                encoded_data = user.profile.profile_pic
             return render(
                 request,
                 "reviews/create_review.html",
@@ -80,34 +86,42 @@ class Reviews:
 
     def search_review(request):
         form = SearchReviewForm()
+        encoded_data = ""
         if request.user.is_authenticated:
             user = get_object_or_404(user_model, username=request.user)
-            encoded_data = ""
             if user.profile.profile_pic:
                 encoded_data = user.profile.profile_pic
         if request.method == "POST":
-            page_number = request.GET.get("page")
-            pincode = request.POST.get("pin_code")
-            locality = request.POST.get("locality")
-            if not pincode and not locality:
-                return HttpResponse("Please enter one of the fields")
-            if locality:
-                reviews = ReviewModel.objects.locality_search(locality, pincode)
-            elif pincode:
-                reviews = (
-                    ReviewModel.objects.filter(Q(pin_code=pincode))
-                    .select_related("user_id")
-                    .prefetch_related("supporting_docs")
-                    .annotate(first_name=F("user_id__first_name"))
-                    .order_by("-created_at")
+            search_form = SearchReviewForm(request.POST)
+            if search_form.is_valid():
+                page_number = request.GET.get("page")
+                pincode = request.POST.get("pin_code")
+                locality = request.POST.get("locality")
+                if not pincode and not locality:
+                    return HttpResponse("Please enter one of the fields")
+                if locality:
+                    reviews = ReviewModel.objects.locality_search(locality, pincode)
+                elif pincode:
+                    reviews = (
+                        ReviewModel.objects.filter(Q(pin_code=pincode))
+                        .select_related("user_id")
+                        .prefetch_related("supporting_docs")
+                        .annotate(first_name=F("user_id__first_name"))
+                        .order_by("-created_at")
+                    )
+                paginator = Paginator(reviews, 5)
+                reviews = paginator.get_page(page_number)
+                return render(
+                    request,
+                    "reviews/home.html",
+                    {"reviews": reviews, "user_profile_link": encoded_data},
                 )
-            paginator = Paginator(reviews, 5)
-            reviews = paginator.get_page(page_number)
-            return render(
-                request,
-                "reviews/home.html",
-                {"reviews": reviews, "user_profile_link": encoded_data},
-            )
+            else:
+                return render(
+                    request,
+                    "reviews/search_review.html",
+                    {"form": search_form, "user_profile_link": encoded_data},
+                )
         else:
             return render(
                 request,

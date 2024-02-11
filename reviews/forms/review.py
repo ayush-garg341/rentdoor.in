@@ -1,9 +1,23 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, ValidationError
 from django import forms
 from reviews.models.review import Reviews
+import re
 
 
 class CreateReviewForm(ModelForm):
+    def clean(self):
+        cleaned_data = super().clean()
+        pin_code = cleaned_data.get("pin_code")
+        is_valid = bool(re.search(r"^[1-9][0-9]{5}$", pin_code))
+        if not is_valid:
+            raise ValidationError("Please enter valid pin code")
+
+        description = cleaned_data.get("description")
+        if not len(description) >= 200:
+            raise ValidationError("Please write atleast 200 chars in description")
+
+        return cleaned_data
+
     class Meta:
         model = Reviews
         fields = [
@@ -12,7 +26,6 @@ class CreateReviewForm(ModelForm):
             "city",
             "state",
             "pin_code",
-            "country",
             "address_line_1",
             "address_line_2",
         ]
@@ -34,5 +47,15 @@ class CreateReviewForm(ModelForm):
 
 
 class SearchReviewForm(forms.Form):
+    def clean(self):
+        cleaned_data = super().clean()
+        pin_code = cleaned_data.get("pin_code")
+        locality = cleaned_data.get("locality")
+
+        if not pin_code and not locality:
+            raise ValidationError("Please enter either pincode or locality")
+
+        return cleaned_data
+
     pin_code = forms.CharField(max_length=100, required=False, label="Pincode")
     locality = forms.CharField(max_length=100, required=False, label="Locality")
