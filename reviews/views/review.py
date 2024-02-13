@@ -41,6 +41,26 @@ class Reviews:
             {"reviews": reviews, "user_profile_link": encoded_data},
         )
 
+    def detail(request, id):
+        encoded_data = ""
+        if request.user.is_authenticated:
+            user = get_object_or_404(user_model, username=request.user)
+            if user.profile.profile_pic:
+                encoded_data = user.profile.profile_pic
+
+        review = (
+            ReviewModel.objects.filter(id=id)
+            .select_related("user_id")
+            .prefetch_related("supporting_docs")
+            .annotate(first_name=F("user_id__first_name"))
+            .order_by("-created_at")
+        )
+        return render(
+            request,
+            "reviews/review_detail.html",
+            {"review": review[0], "user_profile_link": encoded_data},
+        )
+
     @login_required
     def create_review(request):
         form = CreateReviewForm()

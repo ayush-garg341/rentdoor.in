@@ -13,8 +13,8 @@ class CreateReviewForm(ModelForm):
             raise ValidationError("Please enter valid pin code")
 
         description = cleaned_data.get("description")
-        if not len(description) >= 200:
-            raise ValidationError("Please write atleast 200 chars in description")
+        if not len(description) >= 400:
+            raise ValidationError("Please write atleast 400 chars in description")
 
         return cleaned_data
 
