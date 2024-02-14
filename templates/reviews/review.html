@@ -7,17 +7,17 @@
     </div>
     <div class="p-4 pb-2">
         <div class="flex items-center gap-1 mb-4" >
-            <span class="text-gray-500">Description: {{ review.description | slice:":255" | add:"..." }}</span>
+            <span class="text-gray-500"><h3>Description:</h3> {{ review.description | slice:":255" | add:"..." }}</span>
         </div>
         <div class="flex items-center gap-1 mb-4">
-            <span class="text-gray-500">Address Line 1: {{ review.address_line_1 }}</span>
+            <span class="text-gray-500"><h3>Address Line 1:</h3> {{ review.address_line_1 }}</span>
         </div>
         <div class="flex items-center gap-1 mb-4">
-            <span class="text-gray-500">address line 2: {{ review.address_line_2 }}</span>
+            <span class="text-gray-500"><h3>Address line 2:</h3> {{ review.address_line_2 }}</span>
         </div>
         <div class="flex items-center gap-1 mb-4">
 
-            <span class="text-gray-500">Supporting Docs:-
+            <span class="text-gray-500"><h3>Supporting Docs:-</h3>
                 {% for doc in review.supporting_docs.all %}
                 {% if doc.doc_type == 'image' %}
                 <a download={{ doc.name }} href="data:image/*;base64,{{ doc.doc_data | safe}}"><span class="text-gray-500 underline cursor">{{ doc.name }}</span></a>

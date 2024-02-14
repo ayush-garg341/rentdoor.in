@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.contrib import messages
 
@@ -79,4 +80,18 @@ class User:
                 )
         return render(
             request, "users/create_user.html", {"form": form, "profile": profile_form}
+        )
+
+    @login_required
+    def profile(request):
+        encoded_data = ""
+        user = get_object_or_404(user_model, username=request.user)
+        if user.profile.profile_pic:
+            encoded_data = user.profile.profile_pic
+
+        users = user_model.objects.filter(id=user.id).prefetch_related("profile")
+        return render(
+            request,
+            "users/user_detail.html",
+            {"user": users[0], "user_profile_link": encoded_data},
         )

@@ -10,26 +10,26 @@
     </div>
     <div class="p-4 pb-2">
         <div class="flex items-center gap-1 mb-4" >
-            <span class="text-gray-500">Description: {{ review.description }}</span>
+            <span class="text-gray-500"><h3>Description:</h3> {{ review.description }}</span>
         </div>
         <div class="flex items-center gap-1 mb-4">
-            <span class="text-gray-500">Address Line 1: {{ review.address_line_1 }}</span>
+            <span class="text-gray-500"><h3>Address Line 1:</h3> {{ review.address_line_1 }}</span>
         </div>
         <div class="flex items-center gap-1 mb-4">
-            <span class="text-gray-500">address line 2: {{ review.address_line_2 }}</span>
+            <span class="text-gray-500"><h3>address line 2:</h3> {{ review.address_line_2 }}</span>
         </div>
         <div class="flex items-center gap-1 mb-4" >
-            <span class="text-gray-500">City: {{ review.city }}</span>
+            <span class="text-gray-500"><h3>City:</h3> {{ review.city }}</span>
         </div>
         <div class="flex items-center gap-1 mb-4" >
-            <span class="text-gray-500">State: {{ review.state }}</span>
+            <span class="text-gray-500"><h3>State:</h3> {{ review.state }}</span>
         </div>
         <div class="flex items-center gap-1 mb-4" >
-            <span class="text-gray-500">Pincode: {{ review.pin_code }}</span>
+            <span class="text-gray-500"><h3>Pincode:</h3> {{ review.pin_code }}</span>
         </div>
         <div class="flex items-center gap-1 mb-4">
 
-            <span class="text-gray-500">Supporting Docs:-
+            <span class="text-gray-500"><h3>Supporting Docs:-</h3>
                 {% for doc in review.supporting_docs.all %}
                 {% if doc.doc_type == 'image' %}
                 <a download={{ doc.name }} href="data:image/*;base64,{{ doc.doc_data | safe}}"><span class="text-gray-500 underline cursor">{{ doc.name }}</span></a>
