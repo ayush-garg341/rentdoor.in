@@ -28,26 +28,26 @@ services:
       - ./setup/mysql:/docker-entrypoint-initdb.d
       - ./mysql_data_container:/var/lib/mysql:rw
     user: mysql
-  #phpmyadmin:
-     #image: phpmyadmin/phpmyadmin:latest
-     #container_name: phpmyadmin_rentdoor
-     #restart: always
-     #environment:
-       #- MYSQL_ROOT_PASSWORD=root
-       #- PMA_USER=root
-       #- PMA_PASSWORD=root
-     #ports:
-       #- "8092:80"
-     #links:
-       #- mysql:db
-     #depends_on:
-       #- mysql
-  #redis:
-    #image: redis:6.0
-    #container_name: redis_rentdoor
-    #restart: always
-    #ports:
-      #- "6379:6379"
+  phpmyadmin:
+     image: phpmyadmin/phpmyadmin:latest
+     container_name: phpmyadmin_rentdoor
+     restart: always
+     environment:
+       - MYSQL_ROOT_PASSWORD=root
+       - PMA_USER=root
+       - PMA_PASSWORD=root
+     ports:
+       - "8092:80"
+     links:
+       - mysql:db
+     depends_on:
+       - mysql
+  redis:
+    image: redis:6.0
+    container_name: redis_rentdoor
+    restart: always
+    ports:
+      - "6379:6379"
   nginx:
     build: ./setup/nginx
     container_name: nginx_rentdoor
