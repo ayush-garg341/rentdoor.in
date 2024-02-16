@@ -29,7 +29,7 @@ SECRET_KEY = "django-insecure-6&cs9)^r192wby)r7ngt%_juq+vm0qyp7nqh2j2luev2rvnng+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["rentdoor.in", "localhost", "127.0.0.1"]
 
 
 # Application definition
