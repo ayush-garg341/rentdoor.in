@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.db.models import F, Q
 from django.http import HttpResponse
 from django.contrib.auth.models import User as user_model
+from app_users.models.profile import Profile
 from libs.helper import create_locality
 from reviews.forms.review import CreateReviewForm, SearchReviewForm
 from reviews.models.review import Reviews as ReviewModel
@@ -21,9 +22,8 @@ class Reviews:
         encoded_data = ""
         page_number = request.GET.get("page")
         if request.user.is_authenticated:
-            user = get_object_or_404(user_model, username=request.user)
-            if user.profile.profile_pic:
-                encoded_data = user.profile.profile_pic
+            profile = Profile.objects.get(user_id=request.user.id)
+            encoded_data = profile.profile_pic
 
         reviews = (
             ReviewModel.objects.filter(is_active=True)
@@ -44,9 +44,8 @@ class Reviews:
     def detail(request, id):
         encoded_data = ""
         if request.user.is_authenticated:
-            user = get_object_or_404(user_model, username=request.user)
-            if user.profile.profile_pic:
-                encoded_data = user.profile.profile_pic
+            profile = Profile.objects.get(user_id=request.user.id)
+            encoded_data = profile.profile_pic
 
         review = (
             ReviewModel.objects.filter(id=id)
@@ -108,9 +107,8 @@ class Reviews:
         form = SearchReviewForm()
         encoded_data = ""
         if request.user.is_authenticated:
-            user = get_object_or_404(user_model, username=request.user)
-            if user.profile.profile_pic:
-                encoded_data = user.profile.profile_pic
+            profile = Profile.objects.get(user_id=request.user.id)
+            encoded_data = profile.profile_pic
         if request.method == "POST":
             search_form = SearchReviewForm(request.POST)
             if search_form.is_valid():

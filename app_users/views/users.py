@@ -84,14 +84,10 @@ class User:
 
     @login_required
     def profile(request):
-        encoded_data = ""
-        user = get_object_or_404(user_model, username=request.user)
-        if user.profile.profile_pic:
-            encoded_data = user.profile.profile_pic
-
-        users = user_model.objects.filter(id=user.id).prefetch_related("profile")
+        user_id = request.user.id
+        user = user_model.objects.get(id=user_id)
         return render(
             request,
             "users/user_detail.html",
-            {"user": users[0], "user_profile_link": encoded_data},
+            {"user": user, "user_profile_link": user.profile.profile_pic},
         )
