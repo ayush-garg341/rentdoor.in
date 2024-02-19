@@ -94,3 +94,5 @@ db.sqlite3
 .DS_Store
 /logs/*
 migrations/
+staticfiles/
+static_vol/

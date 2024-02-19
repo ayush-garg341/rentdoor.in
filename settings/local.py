@@ -28,9 +28,7 @@ MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
-INTERNAL_IPS = [  # <-- NEW
-    "127.0.0.1",  # <-- NEW
-]  # <-- NEW
+INTERNAL_IPS = ["127.0.0.1", "localhost"]  # <-- NEW  # <-- NEW  # <-- NEW
 
 
 def show_toolbar(request):  # <-- NEW

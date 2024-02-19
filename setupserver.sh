@@ -31,4 +31,6 @@ sudo chmod -R 777 /var/log
 # TODO: Have to fix it permanent while booting up the application, set the permission to correct user which is running the application ...
 
 
+# To serve staticfiles from nginx, it will dump all static files into a single folder and convenient for nginx to load from this folder
+python manage.py collectstatic
 

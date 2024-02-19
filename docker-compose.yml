@@ -4,14 +4,11 @@ services:
   web:
     image: rentdoor
     container_name: rentdoor_webserver
-    command: ["gunicorn", "--bind", "0.0.0.0:8000", "rentdoor.wsgi"]
+    command: ["gunicorn", "--preload" ,"-c", "python:settings.gunicorn", "rentdoor.wsgi"]
     expose:
       - 8000
-    environment:
-      - APP_PORT=1234
-      - DJANGO_SETTINGS_MODULE=settings.prod
-    ports:
-      - "8000:8000"
+    env_file:
+      - ".env"
     volumes:
       - .:/reviews
     links:
@@ -51,6 +48,8 @@ services:
   nginx:
     build: ./setup/nginx
     container_name: nginx_rentdoor
+    volumes:
+      - ./staticfiles:/staticfiles/
     ports:
       - 80:80
     depends_on:

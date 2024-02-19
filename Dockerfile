@@ -16,8 +16,9 @@ WORKDIR /reviews
 ENV PYTHONUNBUFFERED 1
 
 COPY requirements.txt .
+COPY requirements_debug.txt .
 
-RUN pip install --upgrade pip && pip install -r requirements.txt &&\
+RUN pip install --upgrade pip && pip install -r requirements.txt -r requirements_debug.txt &&\
   apt-get update && \
   apt-get install -y --no-install-recommends gcc python3-dev libssl-dev libmariadb3 && \
   apt-get remove -y gcc python3-dev libssl-dev && \
@@ -26,4 +27,5 @@ RUN pip install --upgrade pip && pip install -r requirements.txt &&\
 
 # Copy the source code
 COPY . .
+RUN python manage.py collectstatic
 EXPOSE 8000
