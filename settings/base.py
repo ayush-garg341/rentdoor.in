@@ -158,7 +158,7 @@ if not HOST_NAME:
 
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": True,
+    "disable_existing_loggers": False,
     "filters": {
         "require_debug_false": {
             "()": "django.utils.log.RequireDebugFalse",
@@ -214,11 +214,16 @@ LOGGING = {
     },
     "loggers": {
         "django": {
-            "handlers": ["stdout"],
+            "handlers": ["stdout", "django_file"],
             "level": "INFO",
             "propagate": False,
         },
         "django.template": {
+            "handlers": ["primary_file", "console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "app_users": {
             "handlers": ["primary_file", "console"],
             "level": "DEBUG",
             "propagate": False,

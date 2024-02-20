@@ -21,7 +21,7 @@ class User:
             try:
                 _ = get_object_or_404(user_model, username=uname)
             except Exception as e:
-                logger.exception("Exception occurred", str(e))
+                logger.exception("Exception occurred while login", str(e))
                 return redirect("app_users:create_user")
             pwd = request.POST.get("password")
             auth_user = authenticate(request, username=uname, password=pwd)
