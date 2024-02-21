@@ -25,6 +25,9 @@ sudo chmod +x /usr/local/bin/docker-compose
 sudo docker build -t rentdoor .
 sudo docker-compose up -d
 
+# Permission denied from mysql /var/lib/mysql
+sudo chmod -R a+rwx mysql_data_container
+
 # Making the logs in /var/log directory
 # But writing to this directory require permission, so to fix this
 sudo chmod -R 777 /var/log

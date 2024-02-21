@@ -27,5 +27,6 @@ RUN pip install --upgrade pip && pip install -r requirements.txt -r requirements
 
 # Copy the source code
 COPY . .
-RUN python manage.py collectstatic
-EXPOSE 8000
+COPY ./docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]

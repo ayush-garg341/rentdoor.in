@@ -11,3 +11,7 @@
     - python manage.py inspectdb
 
 - If there is an issue related to mysqlclient while installing and running django app, try to change the python version to >= 3.10
+
+- When setting and deploying the app for the first time, need to follow below steps
+    - Run `python manage.py migrate` to migrate django admin user model migrations.
+    - Then run all the sql statements present in `setup/mysql/create_db.sql` inside mysql container
