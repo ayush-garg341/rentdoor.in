@@ -7,7 +7,7 @@ from django.db.models import F, Q
 from django.http import HttpResponse
 from django.contrib.auth.models import User as user_model
 from app_users.models.profile import Profile
-from libs.helper import create_locality
+from libs.helper import create_locality, validate_file_size
 from reviews.forms.review import CreateReviewForm, SearchReviewForm
 from reviews.models.review import Reviews as ReviewModel
 from reviews.models.supporting_docs import SupportingDocs
@@ -69,7 +69,10 @@ class Reviews:
             encoded_data = user.profile.profile_pic
         if request.method == "POST":
             review_form = CreateReviewForm(request.POST)
-            if review_form.is_valid():
+            file_size_valid, file_size_error = validate_file_size(
+                request.FILES.getlist("supporting_docs")
+            )
+            if review_form.is_valid() and file_size_valid:
                 with transaction.atomic():
                     review = review_form.save(commit=False)
                     review.locality = create_locality(request.POST)
@@ -91,6 +94,8 @@ class Reviews:
                 messages.info(request, "Reviewed added successfully")
                 return redirect("reviews:get_all_reviews")
             else:
+                if not file_size_valid:
+                    messages.info(request, file_size_error)
                 return render(
                     request,
                     "reviews/create_review.html",
