@@ -38,3 +38,5 @@ def show_toolbar(request):  # <-- NEW
 DEBUG_TOOLBAR_CONFIG = {  # <-- NEW
     "SHOW_TOOLBAR_CALLBACK": show_toolbar,  # <-- NEW
 }
+
+MEDIA_FILE_PREFIX = "http://localhost"

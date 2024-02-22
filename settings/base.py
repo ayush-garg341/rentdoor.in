@@ -133,6 +133,8 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -192,20 +194,20 @@ LOGGING = {
             "level": "DEBUG",
             "class": "logging.handlers.RotatingFileHandler",
             "formatter": "req-resp-json",
-            "filename": os.path.join(LOG_DIR, HOST_NAME + "_django.log"),
+            "filename": os.path.join(LOG_DIR, "django_" + HOST_NAME + ".log"),
         },
         "exceptions_file": {
             "level": "DEBUG",
             "class": "logging.handlers.RotatingFileHandler",
             "formatter": "json",
-            "filename": os.path.join(LOG_DIR, HOST_NAME + "_exceptions.log"),
+            "filename": os.path.join(LOG_DIR, "exceptions_" + HOST_NAME + ".log"),
             "encoding": "utf8",
         },
         "primary_file": {
             "level": "DEBUG",
             "class": "logging.handlers.RotatingFileHandler",
             "formatter": "json",
-            "filename": os.path.join(LOG_DIR, HOST_NAME + "_primary.log"),
+            "filename": os.path.join(LOG_DIR, "primary_" + HOST_NAME + ".log"),
         },
         "mail_admins": {
             "level": "ERROR",

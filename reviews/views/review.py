@@ -1,18 +1,19 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.contrib import messages
 from django.db.models import F, Q
 from django.http import HttpResponse
 from django.contrib.auth.models import User as user_model
+from django.conf import settings
 from app_users.models.profile import Profile
 from libs.helper import create_locality, validate_file_size
 from reviews.forms.review import CreateReviewForm, SearchReviewForm
 from reviews.models.review import Reviews as ReviewModel
 from reviews.models.supporting_docs import SupportingDocs
 import logging
-import base64
 
 logger = logging.getLogger(__name__)
 
@@ -78,16 +79,22 @@ class Reviews:
                     review.save()
                     if request.FILES:
                         files = request.FILES.getlist("supporting_docs")
-                        for file in files:
+                        fs = FileSystemStorage()
+                        for request_file in files:
                             doc = SupportingDocs()
                             doc.review = review
-                            filename = file.name
+                            filename = request_file.name.strip().replace(" ", "_")
                             if filename[-4:] == ".pdf":
                                 doc.doc_type = "pdf"
                             else:
                                 doc.doc_type = "image"
                             doc.name = filename
-                            doc.doc_data = base64.b64encode(file.read()).decode("utf-8")
+                            if request_file:
+                                file = fs.save(filename, request_file.file)
+                                fileurl = fs.url(file)
+                                doc.doc_link = "{}{}".format(
+                                    settings.MEDIA_FILE_PREFIX, fileurl
+                                )
                             doc.save()
                 messages.info(request, "Reviewed added successfully")
                 return redirect("reviews:get_all_reviews")

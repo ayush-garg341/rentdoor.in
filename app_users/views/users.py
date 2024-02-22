@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
+from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.contrib import messages
+from django.conf import settings
 
 from django.contrib.auth.models import User as user_model
 from app_users.forms.users import LoginUserForm, CreateUserForm, CreateProfileForm
 from libs.helper import validate_file_size
-from libs.blob_uploader import DigitalOceanUploader
 import logging
 
 logger = logging.getLogger(__name__)
@@ -23,6 +24,7 @@ class User:
                 _ = get_object_or_404(user_model, username=uname)
             except Exception as e:
                 logger.exception("Exception occurred while login", str(e))
+                messages.info(request, "User does not exist")
                 return redirect("app_users:create_user")
             pwd = request.POST.get("password")
             auth_user = authenticate(request, username=uname, password=pwd)
@@ -66,13 +68,13 @@ class User:
                     )
                     user.save()
                     user.profile.job_title = request.POST.get("job_title")
-                    file = request.FILES.get("profile_pic")
-                    if file:
-                        filename = file.name
-                        user.profile.profile_pic_link = (
-                            DigitalOceanUploader().upload_file(
-                                file, filename, "rent-docs", True
-                            )
+                    request_file = request.FILES.get("profile_pic")
+                    fs = FileSystemStorage()
+                    if request_file:
+                        file = fs.save(request_file.name, request_file.file)
+                        fileurl = fs.url(file)
+                        user.profile.profile_pic_link = "{}{}".format(
+                            settings.MEDIA_FILE_PREFIX, fileurl
                         )
                     user.save()
                     messages.info(request, "User created successfully")

@@ -96,3 +96,4 @@ db.sqlite3
 mysql_data_container/
 staticfiles/
 static_vol/
+media/
