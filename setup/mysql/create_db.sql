@@ -38,3 +38,4 @@ CREATE TABLE supporting_docs (
 );
 ALTER TABLE `supporting_docs` ADD CONSTRAINT `doc_review_id` FOREIGN KEY (`review_id`) REFERENCES `reviews` (`id`);
 ALTER TABLE `supporting_docs` ADD COLUMN `type` varchar(15);
+ALTER TABLE `supporting_docs` CHANGE `doc_data` `doc_data` LONGTEXT CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL;

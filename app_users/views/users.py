@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User as user_model
 from app_users.forms.users import LoginUserForm, CreateUserForm, CreateProfileForm
 from libs.helper import validate_file_size
+from libs.blob_uploader import DigitalOceanUploader
 import base64
 import logging
 
@@ -66,13 +67,21 @@ class User:
                     )
                     user.save()
                     user.profile.job_title = request.POST.get("job_title")
-                    user.profile.profile_pic = (
-                        base64.b64encode(
-                            request.FILES.get("profile_pic").read()
-                        ).decode("utf-8")
-                        if request.FILES.get("profile_pic")
-                        else ""
-                    )
+                    file = request.FILES.get("profile_pic")
+                    if file:
+                        filename = file.name
+                        user.profile.profile_pic_link = (
+                            DigitalOceanUploader().upload_file(
+                                file, filename, "rent-docs", True
+                            )
+                        )
+                    # user.profile.profile_pic = (
+                    # base64.b64encode(
+                    # request.FILES.get("profile_pic").read()
+                    # ).decode("utf-8")
+                    # if request.FILES.get("profile_pic")
+                    # else ""
+                    # )
                     user.save()
                     messages.info(request, "User created successfully")
                     return redirect("app_users:login_user")
