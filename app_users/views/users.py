@@ -9,7 +9,6 @@ from django.contrib.auth.models import User as user_model
 from app_users.forms.users import LoginUserForm, CreateUserForm, CreateProfileForm
 from libs.helper import validate_file_size
 from libs.blob_uploader import DigitalOceanUploader
-import base64
 import logging
 
 logger = logging.getLogger(__name__)
@@ -75,13 +74,6 @@ class User:
                                 file, filename, "rent-docs", True
                             )
                         )
-                    # user.profile.profile_pic = (
-                    # base64.b64encode(
-                    # request.FILES.get("profile_pic").read()
-                    # ).decode("utf-8")
-                    # if request.FILES.get("profile_pic")
-                    # else ""
-                    # )
                     user.save()
                     messages.info(request, "User created successfully")
                     return redirect("app_users:login_user")
@@ -104,5 +96,5 @@ class User:
         return render(
             request,
             "users/user_detail.html",
-            {"user": user, "user_profile_link": user.profile.profile_pic},
+            {"user": user, "user_profile_link": user.profile.profile_pic_link},
         )

@@ -19,11 +19,11 @@ logger = logging.getLogger(__name__)
 
 class Reviews:
     def home_view(request):
-        encoded_data = ""
+        profile_pic = ""
         page_number = request.GET.get("page")
         if request.user.is_authenticated:
             profile = Profile.objects.get(user_id=request.user.id)
-            encoded_data = profile.profile_pic
+            profile_pic = profile.profile_pic_link
 
         reviews = (
             ReviewModel.objects.filter(is_active=True)
@@ -38,14 +38,14 @@ class Reviews:
         return render(
             request,
             "reviews/home.html",
-            {"reviews": reviews, "user_profile_link": encoded_data},
+            {"reviews": reviews, "user_profile_link": profile_pic},
         )
 
     def detail(request, id):
-        encoded_data = ""
+        profile_pic = ""
         if request.user.is_authenticated:
             profile = Profile.objects.get(user_id=request.user.id)
-            encoded_data = profile.profile_pic
+            profile_pic = profile.profile_pic_link
 
         review = (
             ReviewModel.objects.filter(id=id)
@@ -57,16 +57,14 @@ class Reviews:
         return render(
             request,
             "reviews/review_detail.html",
-            {"review": review[0], "user_profile_link": encoded_data},
+            {"review": review[0], "user_profile_link": profile_pic},
         )
 
     @login_required
     def create_review(request):
         form = CreateReviewForm()
         user = get_object_or_404(user_model, username=request.user)
-        encoded_data = ""
-        if user.profile.profile_pic:
-            encoded_data = user.profile.profile_pic
+        profile_pic = user.profile.profile_pic_link
         if request.method == "POST":
             review_form = CreateReviewForm(request.POST)
             file_size_valid, file_size_error = validate_file_size(
@@ -99,21 +97,21 @@ class Reviews:
                 return render(
                     request,
                     "reviews/create_review.html",
-                    {"form": review_form, "user_profile_link": encoded_data},
+                    {"form": review_form, "user_profile_link": profile_pic},
                 )
         else:
             return render(
                 request,
                 "reviews/create_review.html",
-                {"form": form, "user_profile_link": encoded_data},
+                {"form": form, "user_profile_link": profile_pic},
             )
 
     def search_review(request):
         form = SearchReviewForm()
-        encoded_data = ""
+        profile_pic = ""
         if request.user.is_authenticated:
             profile = Profile.objects.get(user_id=request.user.id)
-            encoded_data = profile.profile_pic
+            profile_pic = profile.profile_pic_link
         if request.method == "POST":
             search_form = SearchReviewForm(request.POST)
             if search_form.is_valid():
@@ -137,17 +135,17 @@ class Reviews:
                 return render(
                     request,
                     "reviews/home.html",
-                    {"reviews": reviews, "user_profile_link": encoded_data},
+                    {"reviews": reviews, "user_profile_link": profile_pic},
                 )
             else:
                 return render(
                     request,
                     "reviews/search_review.html",
-                    {"form": search_form, "user_profile_link": encoded_data},
+                    {"form": search_form, "user_profile_link": profile_pic},
                 )
         else:
             return render(
                 request,
                 "reviews/search_review.html",
-                {"form": form, "user_profile_link": encoded_data},
+                {"form": form, "user_profile_link": profile_pic},
             )
