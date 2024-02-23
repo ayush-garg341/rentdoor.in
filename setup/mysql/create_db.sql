@@ -39,3 +39,14 @@ CREATE TABLE supporting_docs (
 ALTER TABLE `supporting_docs` ADD CONSTRAINT `doc_review_id` FOREIGN KEY (`review_id`) REFERENCES `reviews` (`id`);
 ALTER TABLE `supporting_docs` ADD COLUMN `type` varchar(15);
 ALTER TABLE `supporting_docs` CHANGE `doc_data` `doc_data` LONGTEXT CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL;
+
+CREATE TABLE `profile` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `profile_pic` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci,
+  `profile_pic_link` varchar(512) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `user_id` int NOT NULL,
+  `job_title` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`),
+  CONSTRAINT `profile_user_id_2aeb6f6b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb3;
