@@ -45,7 +45,10 @@ services:
     ports:
       - "6379:6379"
   nginx:
-    build: ./setup/nginx
+    build:
+      context: ./setup/nginx
+      args:
+        - ENV=$ENV
     container_name: nginx_rentdoor
     volumes:
       - ./staticfiles:/staticfiles/
