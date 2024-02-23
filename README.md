@@ -15,3 +15,17 @@
 - When setting and deploying the app for the first time, need to follow below steps
     - Run `python manage.py migrate` to migrate django admin user model migrations.
     - Then run all the sql statements present in `setup/mysql/create_db.sql` inside mysql container
+
+- Generate certificate using letsencrypt
+    - First of all stop nginx server if it's already running
+    - Now generate ssl for domain using below commands
+        - docker-compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --dry-run -d housedoor.in
+        - docker-compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ -d housedoor.in
+    - The above two commands will create necessary folders, now reload nginx
+        - docker-compose restart
+    - If you cannot afford the downtime the command above causes, execute the command below:
+        - docker-compose exec nginx_rentdoor nginx -s reload
+    - Renew Certificates
+        - Let's Encrypt certificates last for three months, after which it is necessary to renew them:-
+            - docker-compose run --rm certbot renew
+        - Setup a cronjob for this, to renew automatically
