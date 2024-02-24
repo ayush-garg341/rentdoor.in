@@ -8,4 +8,4 @@ packaging==23.2
 python-dotenv
 pytz==2023.3.post1
 sqlparse==0.4.4
-boto3
+newrelic

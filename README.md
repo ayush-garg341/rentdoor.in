@@ -29,3 +29,12 @@
         - Let's Encrypt certificates last for three months, after which it is necessary to renew them:-
             - docker-compose run --rm certbot renew
         - Setup a cronjob for this, to renew automatically
+
+- Setup newrelic:-
+    - On prod, bare ec2/linux instance to monitor all the resources like CPU, memory, disk for running containers.
+        - curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash
+        - sudo NEW_RELIC_API_KEY=$NEW_RELIC_API_KEY NEW_RELIC_ACCOUNT_ID=$NEW_RELIC_ACCOUNT_ID NEW_RELIC_REGION=EU /usr/local/bin/newrelic install
+    - For APM inside python application and for distributed tracing
+        - Install newrelic python package
+        - Add newrelic.ini for configuration
+        - Run python application with gunicorn command

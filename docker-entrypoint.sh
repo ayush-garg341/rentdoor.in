@@ -10,4 +10,10 @@ echo "Apply database migrations"
 
 # Start server
 echo "Starting gunicorn server"
-gunicorn --preload -c python:settings.gunicorn rentdoor.wsgi
+echo "env variable:- $ENV"
+if [ "$ENV" == "prod" ]; then
+    NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program gunicorn --preload -c python:settings.gunicorn rentdoor.wsgi
+else
+    gunicorn --preload -c python:settings.gunicorn rentdoor.wsgi
+fi
+
