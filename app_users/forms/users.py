@@ -79,7 +79,5 @@ class CreateProfileForm(ModelForm):
         fields = ["job_title"]
         labels = {"job_title": "Job Title"}
         widgets = {
-            "job_title": forms.TextInput(
-                attrs={"placeholder": "", "required": "required"}
-            ),
+            "job_title": forms.TextInput(attrs={"placeholder": "Optional .."}),
         }

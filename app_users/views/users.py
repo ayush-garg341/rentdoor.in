@@ -49,9 +49,11 @@ class User:
         if request.method == "POST":
             user_form = CreateUserForm(request.POST)
             profile_form = CreateProfileForm(request.POST)
-            file_size_valid, file_size_error = validate_file_size(
-                [request.FILES.get("profile_pic")]
-            )
+            file_size_valid, file_size_error = True, ""
+            if request.FILES.get("profile_pic"):
+                file_size_valid, file_size_error = validate_file_size(
+                    [request.FILES.get("profile_pic")]
+                )
             if user_form.is_valid() and profile_form.is_valid() and file_size_valid:
                 first_name = request.POST.get("first_name")
                 last_name = request.POST.get("last_name")
