@@ -45,3 +45,9 @@
     - install procps, gdb ( apt-get update, apt-get install procps gdb )
     - install memray with pip
     - memray attach <pid> ( find pid with the help of ps aux )
+
+- Setup pre-commit hook in python
+    - pip install pre-commit
+    - pre-commit --version
+    - touch .pre-commit-config.yaml
+    - pre-commit install
