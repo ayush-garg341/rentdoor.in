@@ -38,3 +38,10 @@
         - Install newrelic python package
         - Add newrelic.ini for configuration
         - Run python application with gunicorn command
+
+- Run memray profiler for memory profiling flask/django application
+    - Attach the process running python application to memray
+    - Go inside flask/django container
+    - install procps, gdb ( apt-get update, apt-get install procps gdb )
+    - install memray with pip
+    - memray attach <pid> ( find pid with the help of ps aux )
